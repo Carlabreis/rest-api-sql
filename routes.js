@@ -1,11 +1,15 @@
 const express = require("express");
 const router = express.Router();
+
+// import models
 const { User } = require("./models");
 const { Course } = require("./models");
+
+// import middleware functions
 const { asyncHandler } = require("./middleware/asyncHandler");
 const { authenticateUser } = require("./middleware/auth-user");
 
-/** USERS ROUTES */
+/**** USERS ROUTES ***/
 
 // READ currently authenticated user's properties and values
 router.get(
@@ -46,7 +50,7 @@ router.post(
   })
 );
 
-/** COURSES ROUTES */
+/**** COURSES ROUTES ****/
 
 // READ all courses including the User associated with each courses
 router.get(
