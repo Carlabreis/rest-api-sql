@@ -6,6 +6,13 @@ const morgan = require('morgan');
 
 const { sequelize } = require('./models'); // import Sequelize
 
+// Get references to our models.
+// const { User, Course } = models;
+
+// const routes = require('./routes/index');
+const users = require('./routes/users');
+const courses = require('./routes/courses');
+
 // variable to enable global error logging
 const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
 
@@ -24,6 +31,10 @@ app.use(morgan('dev'));
     console.error('Unable to connect to the database:', error);
   }
 })();
+
+// app.use('/', routes);
+app.use('/api', users);
+app.use('/api', courses);
 
 // setup a friendly greeting for the root route
 app.get('/', (req, res) => {
