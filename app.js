@@ -4,14 +4,13 @@
 const express = require('express');
 const morgan = require('morgan');
 
-const { sequelize } = require('./models'); // import Sequelize
+ // import Sequelize
+const { sequelize } = require('./models');
 
 // Get references to our models.
 // const { User, Course } = models;
 
-// const routes = require('./routes/index');
-const users = require('./routes/users');
-const courses = require('./routes/courses');
+const routes = require('./routes');
 
 // variable to enable global error logging
 const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
@@ -22,19 +21,20 @@ const app = express();
 // setup morgan which gives us http request logging
 app.use(morgan('dev'));
 
-// Test the database connection.
-(async () => {
-  try {
-    await sequelize.authenticate();
-    console.log('Connection has been established successfully.');
-  } catch (error) {
-    console.error('Unable to connect to the database:', error);
-  }
-})();
+// middleware function that parses incoming JSON requests and puts the parsed data in req.body
+app.use(express.json());
 
-// app.use('/', routes);
-app.use('/api', users);
-app.use('/api', courses);
+// Test the database connection.
+// (async () => {
+//   try {
+//     await sequelize.authenticate();
+//     console.log('Connection has been established successfully.');
+//   } catch (error) {
+//     console.error('Unable to connect to the database:', error);
+//   }
+// })();
+
+app.use('/api', routes);
 
 // setup a friendly greeting for the root route
 app.get('/', (req, res) => {

@@ -1,39 +1,61 @@
-const { Sequelize, DataTypes, Model } = require('sequelize');
+'use strict';
+
+const { Sequelize, DataTypes, Model } = require("sequelize");
 
 module.exports = (sequelize) => {
-    class Course extends Model {}
+  class Course extends Model {}
 
-Course.init({
-  // Model attributes are defined here
-  title: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  description: {
-    type: DataTypes.TEXT
-  },
-  estimatedTime: {
-    type: DataTypes.STRING
-  },
-  materialsNeeded: {
-    type: DataTypes.STRING
-  }
-}, {
-  // Other model options go here
-  sequelize, // We need to pass the connection instance
-  modelName: 'Course' // We need to choose the model name
-});
+  Course.init(
+    {
+      // Model attributes are defined here
+      title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: {
+            msg: "A title is required",
+          },
+          notEmpty: {
+            msg: "Please provide a title",
+          },
+        },
+      },
+      description: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        validate: {
+          notNull: {
+            msg: 'A description is required',
+          },
+          notEmpty: {
+            msg: 'Please provide a description',
+          },
+        },
+      },
+      estimatedTime: {
+        type: DataTypes.STRING,
+      },
+      materialsNeeded: {
+        type: DataTypes.STRING,
+      },
+    },
+    {
+      // Other model options go here
+      sequelize, // We need to pass the connection instance
+      modelName: "Course", // We need to choose the model name
+    }
+  );
 
-Course.associate = (models) => {
+  Course.associate = (models) => {
     // TODO Add associations.
     Course.belongsTo(models.User, {
-    //   as: 'course', // alias
+      //   as: 'course', // alias
       foreignKey: {
-        fieldName: 'userId',
+        fieldName: "userId",
         allowNull: false,
       },
     });
   };
 
-return Course;
+  return Course;
 };
