@@ -54,13 +54,12 @@ router.get(
   asyncHandler(async (req, res) => {
     const courses = await Course.findAll({
       order: [["createdAt", "DESC"]],
-      attributes: [
-        "id",
-        "title",
-        "description",
-        "estimatedTime",
-        "materialsNeeded",
-        "userId",
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+      include: [
+        {
+          model: User,
+          attributes: ["id", "firstName", "lastName", "emailAddress"],
+        },
       ],
     });
     res.status(200).json(courses);
@@ -71,16 +70,15 @@ router.get(
 router.get(
   "/courses/:id",
   asyncHandler(async (req, res) => {
-    const course = await Course.findByPk(req.params.id);
+    const course = await Course.findByPk(req.params.id, {
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+      include: {
+        model: User,
+        attributes: ["id", "firstName", "lastName", "emailAddress"],
+      },
+    });
     if (course) {
-      res.json({
-        id: course.id,
-        title: course.title,
-        description: course.description,
-        estimatedTime: course.estimatedTime,
-        materialsNeeded: course.materialsNeeded,
-        userId: course.userId,
-      });
+      res.status(200).json(course);
     } else {
       res.sendStatus(404);
     }
@@ -144,8 +142,13 @@ router.delete(
   asyncHandler(async (req, res) => {
     const course = await Course.findByPk(req.params.id);
     if (course) {
-      await course.destroy();
-      res.status(204).location("/courses").end();
+      const courseOwner = course.userId;
+      if (courseOwner == req.currentUser.id) {
+        await course.destroy();
+        res.status(204).end();
+      } else {
+        res.status(403).end();
+      }
     } else {
       res.sendStatus(404);
     }

@@ -1,5 +1,3 @@
-'use strict';
-
 const { Sequelize, DataTypes, Model } = require("sequelize");
 
 module.exports = (sequelize) => {
@@ -47,7 +45,6 @@ module.exports = (sequelize) => {
   );
 
   Course.associate = (models) => {
-    // TODO Add associations.
     Course.belongsTo(models.User, {
       //   as: 'course', // alias
       foreignKey: {

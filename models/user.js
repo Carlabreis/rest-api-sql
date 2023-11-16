@@ -75,7 +75,6 @@ User.init({
 });
 
 User.associate = (models) => {
-    // TODO Add associations.
     User.hasMany(models.Course, {
     //   as: 'course', // alias
       foreignKey: {
